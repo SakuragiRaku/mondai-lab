@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>モンダイラボ | AIが出題する試験対策</title>
+  <meta name="description" content="教材を入力するだけでAIが問題を自動生成。ポップで楽しいクイズ形式で試験対策ができる。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- ヘッダー -->
+    <header class="header">
+      <div class="header-left">
+        <span class="logo">🧪</span>
+        <h1 class="app-title">モンダイラボ</h1>
+      </div>
+      <nav class="header-nav">
+        <button class="nav-btn active" data-view="home" id="nav-home">ホーム</button>
+        <button class="nav-btn" data-view="materials" id="nav-materials">教材</button>
+        <button class="nav-btn" data-view="history" id="nav-history">記録</button>
+        <button class="nav-btn" data-view="settings" id="nav-settings">⚙️</button>
+      </nav>
+    </header>
+
+    <!-- ホーム画面 -->
+    <main class="view active" id="view-home">
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h2>今日も<span class="highlight">モンダイ</span>解こう! 🎯</h2>
+          <p>教材を登録して、AIにクイズを出してもらおう</p>
+        </div>
+      </div>
+
+      <div class="quick-stats">
+        <div class="qstat">
+          <span class="qstat-icon">🔥</span>
+          <span class="qstat-value" id="home-streak">0</span>
+          <span class="qstat-label">日連続</span>
+        </div>
+        <div class="qstat">
+          <span class="qstat-icon">✅</span>
+          <span class="qstat-value" id="home-correct">0</span>
+          <span class="qstat-label">正解数</span>
+        </div>
+        <div class="qstat">
+          <span class="qstat-icon">📚</span>
+          <span class="qstat-value" id="home-subjects">0</span>
+          <span class="qstat-label">科目数</span>
+        </div>
+      </div>
+
+      <h3 class="section-title">📚 科目を選んでスタート</h3>
+      <div class="subject-cards" id="subject-cards">
+        <div class="empty-state" id="empty-subjects">
+          <span class="empty-icon">📝</span>
+          <p>まだ教材がありません</p>
+          <button class="btn-primary" id="go-materials">教材を登録する</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 教材管理画面 -->
+    <main class="view" id="view-materials">
+      <h2 class="page-title">📚 教材管理</h2>
+      <div class="add-material">
+        <input type="text" class="input" id="subject-name" placeholder="科目名 (例: 基本情報技術者)" />
+        <input type="text" class="input" id="unit-name" placeholder="単元名 (例: ネットワーク基礎)" />
+        <textarea class="textarea" id="material-text" placeholder="教科書やノートの内容をここにペースト...&#10;&#10;AIがこのテキストを元に問題を作成します。"></textarea>
+        <button class="btn-primary full" id="save-material">✨ 教材を保存</button>
+      </div>
+      <div class="material-list" id="material-list"></div>
+    </main>
+
+    <!-- テスト設定画面（モーダル的に表示） -->
+    <div class="quiz-setup hidden" id="quiz-setup">
+      <div class="setup-card">
+        <h2>🎮 クイズ設定</h2>
+        <p class="setup-subject" id="setup-subject"></p>
+
+        <div class="setup-group">
+          <label>問題形式</label>
+          <div class="option-pills" id="format-pills">
+            <button class="pill active" data-format="choice">4択</button>
+            <button class="pill" data-format="fill">穴埋め</button>
+            <button class="pill" data-format="short">一問一答</button>
+          </div>
+        </div>
+
+        <div class="setup-group">
+          <label>難易度</label>
+          <div class="option-pills" id="difficulty-pills">
+            <button class="pill" data-difficulty="easy">😊 やさしい</button>
+            <button class="pill active" data-difficulty="normal">🤔 ふつう</button>
+            <button class="pill" data-difficulty="hard">🔥 むずかしい</button>
+          </div>
+        </div>
+
+        <div class="setup-group">
+          <label>出題数</label>
+          <div class="option-pills" id="count-pills">
+            <button class="pill active" data-count="5">5問</button>
+            <button class="pill" data-count="10">10問</button>
+            <button class="pill" data-count="20">20問</button>
+          </div>
+        </div>
+
+        <div class="setup-actions">
+          <button class="btn-secondary" id="setup-cancel">戻る</button>
+          <button class="btn-primary" id="setup-start">🚀 スタート!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- テスト画面 -->
+    <div class="quiz-screen hidden" id="quiz-screen">
+      <div class="quiz-header">
+        <span class="quiz-progress" id="quiz-progress">1 / 5</span>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <button class="quit-btn" id="quiz-quit">✕</button>
+      </div>
+
+      <div class="question-card" id="question-card">
+        <div class="question-text" id="question-text"></div>
+        <div class="answer-area" id="answer-area"></div>
+      </div>
+
+      <div class="feedback hidden" id="feedback">
+        <div class="feedback-icon" id="feedback-icon"></div>
+        <div class="feedback-result" id="feedback-result"></div>
+        <div class="feedback-explanation" id="feedback-explanation"></div>
+        <button class="btn-primary" id="next-question">次の問題 →</button>
+      </div>
+
+      <div class="loading-overlay hidden" id="loading">
+        <div class="spinner"></div>
+        <p>AIが問題を作成中... 🧪</p>
+      </div>
+    </div>
+
+    <!-- 結果画面 -->
+    <div class="result-screen hidden" id="result-screen">
+      <div class="result-card">
+        <div class="result-emoji" id="result-emoji">🎉</div>
+        <h2 class="result-title" id="result-title">お疲れさま!</h2>
+        <div class="result-score">
+          <span class="score-value" id="score-value">0</span>
+          <span class="score-total" id="score-total">/ 5</span>
+        </div>
+        <div class="result-accuracy" id="result-accuracy">正答率: 0%</div>
+        <div class="result-message" id="result-message"></div>
+        <div class="result-actions">
+          <button class="btn-secondary" id="result-review">間違えた問題を見る</button>
+          <button class="btn-primary" id="result-home">ホームに戻る</button>
+        </div>
+      </div>
+      <div class="wrong-answers hidden" id="wrong-answers"></div>
+    </div>
+
+    <!-- 履歴画面 -->
+    <main class="view" id="view-history">
+      <h2 class="page-title">📊 学習記録</h2>
+      <div class="history-stats">
+        <div class="hstat">
+          <span class="hstat-value" id="hist-total-q">0</span>
+          <span class="hstat-label">総問題数</span>
+        </div>
+        <div class="hstat">
+          <span class="hstat-value" id="hist-accuracy">0%</span>
+          <span class="hstat-label">平均正答率</span>
+        </div>
+      </div>
+      <div class="history-list" id="history-list"></div>
+    </main>
+
+    <!-- 設定画面 -->
+    <main class="view" id="view-settings">
+      <h2 class="page-title">⚙️ 設定</h2>
+      <div class="setting-group">
+        <h3>🔑 Gemini APIキー</h3>
+        <p class="setting-desc">問題の生成にGemini APIを使用します。</p>
+        <div class="api-key-row">
+          <input type="password" class="input" id="api-key-input" placeholder="APIキーを入力..." />
+          <button class="btn-primary" id="save-api-key">保存</button>
+        </div>
+        <a class="api-link" href="https://aistudio.google.com/apikey" target="_blank">→ Google AI Studioでキーを取得</a>
+        <div class="api-status" id="api-status"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="ai-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

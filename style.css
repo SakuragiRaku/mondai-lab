@@ -2,30 +2,18 @@
 /* ポップでカラフル、クイズアプリのような楽しいデザイン */
 
 :root {
-  --bg-primary: #f8f4ff;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f0eaf8;
-  --text-primary: #2d1b69;
-  --text-secondary: #6b5b95;
-  --text-muted: #a99bc7;
-  --accent: #7c3aed;
-  --accent-light: #ede9fe;
-  --accent-dark: #5b21b6;
-  --correct: #10b981;
-  --correct-bg: #d1fae5;
-  --wrong: #ef4444;
-  --wrong-bg: #fee2e2;
-  --orange: #f59e0b;
-  --pink: #ec4899;
-  --blue: #3b82f6;
-  --border: #e8e0f0;
-  --shadow-sm: 0 2px 8px rgba(124, 58, 237, 0.08);
-  --shadow-md: 0 4px 20px rgba(124, 58, 237, 0.12);
-  --shadow-pop: 0 8px 30px rgba(124, 58, 237, 0.2);
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-full: 999px;
+  --bg-primary:#f8f9fb;--bg-secondary:#fff;--bg-tertiary:#f0f2f5;--text-primary:#1a1d23;--text-secondary:#5f6577;--text-tertiary:#9098a9;--border-color:#e2e5eb;
+  --accent:#7c3aed;--accent-hover:#5b21b6;--accent-light:#ede9fe;--accent-dark:#5b21b6;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;
+  --correct:#10b981;--correct-bg:#d1fae5;--wrong:#ef4444;--wrong-bg:#fee2e2;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;
+  --shadow-sm:0 1px 2px rgba(124,58,237,.08);--shadow-md:0 4px 12px rgba(124,58,237,.12);--shadow-lg:0 8px 32px rgba(124,58,237,.15);
+  --shadow-pop:0 8px 30px rgba(124,58,237,.2);
+  --radius-sm:10px;--radius-md:16px;--radius-lg:24px;--radius-full:999px;--transition:0.25s ease;
+  --border:var(--border-color);--text-muted:var(--text-tertiary);
+}
+[data-theme="dark"] {
+  --bg-primary:#0f1117;--bg-secondary:#1a1d27;--bg-tertiary:#252833;--text-primary:#e8eaf0;--text-secondary:#9098a9;--text-tertiary:#5f6577;--border-color:#2e3240;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.2);--shadow-md:0 4px 12px rgba(0,0,0,.3);--shadow-lg:0 8px 32px rgba(0,0,0,.4);
+  --correct:#10b981;--correct-bg:#064e3b;--wrong:#ef4444;--wrong-bg:#7f1d1d;
 }
 
 *, *::before, *::after {
@@ -42,23 +30,26 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.app {
+.app-container {
   max-width: 560px;
   margin: 0 auto;
   padding: 0 20px 40px;
 }
 
 /* ===== Header ===== */
-.header {
+.app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
+  margin-bottom: 24px;
   position: sticky;
   top: 0;
   background: var(--bg-primary);
   z-index: 100;
 }
+.icon-btn { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; cursor: pointer; font-size: 1rem; color: var(--text-primary); transition: all 0.2s; }
+.icon-btn:hover { background: var(--border); }
 
 .header-left {
   display: flex;
